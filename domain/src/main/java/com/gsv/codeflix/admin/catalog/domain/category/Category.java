@@ -1,10 +1,10 @@
 package com.gsv.codeflix.admin.catalog.domain.category;
 
-import java.time.Instant;
-import java.util.UUID;
+import com.gsv.codeflix.admin.catalog.domain.AggregateRoot;
 
-public class Category {
-    public String id;
+import java.time.Instant;
+
+public class Category extends AggregateRoot<CategoryID> {
     private final String name;
     private final String description;
     private final boolean isActive;
@@ -12,8 +12,8 @@ public class Category {
     private final Instant updatedAt;
     private final Instant deletedAt;
 
-    private Category(String id, String name, String description, boolean isActive, Instant createdAt, Instant updatedAt, Instant deletedAt) {
-        this.id = id;
+    private Category(CategoryID id, String name, String description, boolean isActive, Instant createdAt, Instant updatedAt, Instant deletedAt) {
+        super(id);
         this.name = name;
         this.description = description;
         this.isActive = isActive;
@@ -23,12 +23,12 @@ public class Category {
     }
 
     public static Category newCategory(String name, String desc, boolean isActive) {
-        final var id = UUID.randomUUID().toString();
+        final var id = CategoryID.unique();
         final var timestamp = Instant.now();
         return new Category(id, name, desc, isActive, timestamp, timestamp, null);
     }
 
-    public String getId() {
+    public CategoryID getId() {
         return id;
     }
 
