@@ -2,12 +2,13 @@ package com.gsv.codeflix.admin.catalog.domain.category;
 
 import com.gsv.codeflix.admin.catalog.domain.AggregateRoot;
 import com.gsv.codeflix.admin.catalog.domain.validation.ValidationHandler;
+import com.gsv.codeflix.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
 
 import java.time.Instant;
 
 public class Category extends AggregateRoot<CategoryID> {
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     private boolean isActive;
     private final Instant createdAt;
     private Instant updatedAt;
@@ -78,6 +79,23 @@ public class Category extends AggregateRoot<CategoryID> {
         this.deletedAt = null;
         this.isActive = true;
         this.updatedAt = Instant.now();
+
+        return this;
+    }
+
+    public Category update(String name, String desc, boolean isActive) {
+        this.name = name;
+        this.description = desc;
+
+        if (isActive) {
+            activate();
+        } else {
+            deactivate();
+        }
+
+        this.updatedAt = Instant.now();
+
+        validate(new ThrowsValidationHandler());
 
         return this;
     }

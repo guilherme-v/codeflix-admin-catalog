@@ -124,4 +124,42 @@ class CategoryTest {
 
         Assertions.assertDoesNotThrow(() -> actual.validate(new ThrowsValidationHandler()));
     }
+
+    @Test
+    public void givenACategory_whenCallUpdateWithValidParams_thenReturnUpdatedCategory() {
+        final var name = "MOVIE_XYZ";
+        final var desc = "Description of the movie";
+        final var isActive = false;
+        final var category = Category.newCategory(name, desc, isActive);
+        final var categoryOriginalUpdatedAt = category.getUpdatedAt();
+
+        final var expectedName = "MOVIE_2";
+        final var expectedDesc = "Description of the movie2";
+        final var expectedIsActive = true;
+
+        final Category actual = category.update(expectedName, expectedDesc, expectedIsActive);
+
+        Assertions.assertNotNull(actual);
+
+        Assertions.assertEquals(category.getId(), actual.getId());
+        Assertions.assertEquals(category.getCreatedAt(), actual.getCreatedAt());
+
+        Assertions.assertEquals(actual.getName(), expectedName);
+        Assertions.assertEquals(actual.getDescription(), expectedDesc);
+        Assertions.assertTrue(actual.getIsActive());
+        Assertions.assertNotEquals(actual.getUpdatedAt(), categoryOriginalUpdatedAt);
+
+        Assertions.assertDoesNotThrow(() -> actual.validate(new ThrowsValidationHandler()));
+    }
+
+    @Test
+    public void givenACategory_whenCallUpdateWithInvalidParams_thenItShouldThrows() {
+        final var name = "MOVIE_XYZ";
+        final var desc = "Description of the movie";
+        final var isActive = false;
+        final var category = Category.newCategory(name, desc, isActive);
+
+        Assertions.assertThrows(DomainException.class, () -> category.update(" ", desc, isActive));
+        Assertions.assertDoesNotThrow(() -> category.update(name, " ", isActive));
+    }
 }
