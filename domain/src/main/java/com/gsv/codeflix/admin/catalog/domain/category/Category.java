@@ -1,6 +1,7 @@
 package com.gsv.codeflix.admin.catalog.domain.category;
 
 import com.gsv.codeflix.admin.catalog.domain.AggregateRoot;
+import com.gsv.codeflix.admin.catalog.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 
@@ -30,6 +31,11 @@ public class Category extends AggregateRoot<CategoryID> {
 
     public CategoryID getId() {
         return id;
+    }
+
+    @Override
+    public void validate(final ValidationHandler handler) {
+        new CategoryValidator(this, handler).validate();
     }
 
     public String getName() {
