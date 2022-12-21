@@ -76,4 +76,52 @@ class CategoryTest {
         Assertions.assertEquals(1, actualExp.getErrors().size());
         Assertions.assertEquals("'name' should not have more then 255 characters", actualExp.getErrors().get(0).message());
     }
+
+    @Test
+    public void givenAnActivatedCategory_whenCallDeactivate_thenReturnDeactivatedUpdatedCategory() {
+        final var name = "MOVIE_XYZ";
+        final var desc = "Description of the movie";
+        final var isActive = true;
+        final var category = Category.newCategory(name, desc, isActive);
+        final var categoryOriginalUpdatedAt = category.getUpdatedAt();
+
+        final Category actual = category.deactivate();
+
+        Assertions.assertNotNull(actual);
+
+        Assertions.assertFalse(actual.getIsActive());
+        Assertions.assertNotEquals(actual.getUpdatedAt(), categoryOriginalUpdatedAt);
+        Assertions.assertNotNull(actual.getDeletedAt());
+
+        Assertions.assertEquals(category.getId(), actual.getId());
+        Assertions.assertEquals(category.getName(), actual.getName());
+        Assertions.assertEquals(category.getDescription(), actual.getDescription());
+        Assertions.assertEquals(category.getCreatedAt(), actual.getCreatedAt());
+
+        Assertions.assertDoesNotThrow(() -> actual.validate(new ThrowsValidationHandler()));
+    }
+
+    @Test
+    public void givenAnDeactivatedCategory_whenCallActivate_thenReturnActivatedUpdatedCategory() {
+        final var name = "MOVIE_XYZ";
+        final var desc = "Description of the movie";
+        final var isActive = false;
+        final var category = Category.newCategory(name, desc, isActive);
+        final var categoryOriginalUpdatedAt = category.getUpdatedAt();
+
+        final Category actual = category.activate();
+
+        Assertions.assertNotNull(actual);
+
+        Assertions.assertTrue(actual.getIsActive());
+        Assertions.assertNotEquals(actual.getUpdatedAt(), categoryOriginalUpdatedAt);
+        Assertions.assertNull(actual.getDeletedAt());
+
+        Assertions.assertEquals(category.getId(), actual.getId());
+        Assertions.assertEquals(category.getName(), actual.getName());
+        Assertions.assertEquals(category.getDescription(), actual.getDescription());
+        Assertions.assertEquals(category.getCreatedAt(), actual.getCreatedAt());
+
+        Assertions.assertDoesNotThrow(() -> actual.validate(new ThrowsValidationHandler()));
+    }
 }

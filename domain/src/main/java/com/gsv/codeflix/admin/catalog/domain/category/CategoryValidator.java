@@ -6,6 +6,8 @@ import com.gsv.codeflix.admin.catalog.domain.validation.Validator;
 
 public class CategoryValidator extends Validator {
 
+    public static final int NAME_MIN_LENGTH = 3;
+    public static final int NAME_MAX_LENGTH = 255;
     private final Category category;
 
     public CategoryValidator(Category category, ValidationHandler handler) {
@@ -26,10 +28,10 @@ public class CategoryValidator extends Validator {
         if (category.getName().trim().isEmpty()) {
             this.validationHandler().append(new Error("'name' should not be empty"));
         }
-        if (category.getName().length() < 3) {
+        if (category.getName().length() < NAME_MIN_LENGTH) {
             this.validationHandler().append(new Error("'name' should have at least 3 characters"));
         }
-        if (category.getName().length() > 255) {
+        if (category.getName().length() > NAME_MAX_LENGTH) {
             this.validationHandler().append(new Error("'name' should not have more then 255 characters"));
         }
     }
