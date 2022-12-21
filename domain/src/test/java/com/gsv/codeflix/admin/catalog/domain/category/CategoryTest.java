@@ -27,13 +27,53 @@ class CategoryTest {
 
     @Test
     public void givenNullName_whenCallNewCategory_thenThroughException() {
+        final String name = null;
         final var desc = "Description of the movie";
         final var isActive = true;
 
-        final var actual = Category.newCategory(null, desc, isActive);
+        final var actual = Category.newCategory(name, desc, isActive);
 
         final var actualExp = Assertions.assertThrows(DomainException.class, () -> actual.validate(new ThrowsValidationHandler()));
         Assertions.assertEquals(1, actualExp.getErrors().size());
         Assertions.assertEquals("'name' should not be null", actualExp.getErrors().get(0).message());
+    }
+
+    @Test
+    public void givenEmptyName_whenCallNewCategory_thenThroughException() {
+        final String name = " ";
+        final var desc = "Description of the movie";
+        final var isActive = true;
+
+        final var actual = Category.newCategory(name, desc, isActive);
+
+        final var actualExp = Assertions.assertThrows(DomainException.class, () -> actual.validate(new ThrowsValidationHandler()));
+        Assertions.assertEquals(1, actualExp.getErrors().size());
+        Assertions.assertEquals("'name' should not be empty", actualExp.getErrors().get(0).message());
+    }
+
+    @Test
+    public void givenNameWithLengthLessThen3_whenCallNewCategory_thenThroughException() {
+        final String name = "12";
+        final var desc = "Description of the movie";
+        final var isActive = true;
+
+        final var actual = Category.newCategory(name, desc, isActive);
+
+        final var actualExp = Assertions.assertThrows(DomainException.class, () -> actual.validate(new ThrowsValidationHandler()));
+        Assertions.assertEquals(1, actualExp.getErrors().size());
+        Assertions.assertEquals("'name' should have at least 3 characters", actualExp.getErrors().get(0).message());
+    }
+
+    @Test
+    public void givenNameWithLengthMoreThen255_whenCallNewCategory_thenThroughException() {
+        final String name256 = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";
+        final var desc = "Description of the movie";
+        final var isActive = true;
+
+        final var actual = Category.newCategory(name256, desc, isActive);
+
+        final var actualExp = Assertions.assertThrows(DomainException.class, () -> actual.validate(new ThrowsValidationHandler()));
+        Assertions.assertEquals(1, actualExp.getErrors().size());
+        Assertions.assertEquals("'name' should not have more then 255 characters", actualExp.getErrors().get(0).message());
     }
 }
