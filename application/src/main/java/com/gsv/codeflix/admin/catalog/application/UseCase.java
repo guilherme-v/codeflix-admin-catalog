@@ -4,6 +4,6 @@ import com.gsv.codeflix.admin.catalog.domain.category.Category;
 
 public class UseCase {
     public Category execute() {
-        return new Category();
+        return Category.newCategory("name", "desc", true);
     }
 }
