@@ -1,5 +1,7 @@
 package com.gsv.codeflix.admin.catalog.domain.validation;
 
+import com.gsv.codeflix.admin.catalog.domain.validation.handler.Notification;
+
 import java.util.List;
 
 public interface ValidationHandler {

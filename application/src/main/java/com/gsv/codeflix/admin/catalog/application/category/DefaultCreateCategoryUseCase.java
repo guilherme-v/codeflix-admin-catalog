@@ -2,7 +2,11 @@ package com.gsv.codeflix.admin.catalog.application.category;
 
 import com.gsv.codeflix.admin.catalog.domain.category.Category;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryGateway;
-import com.gsv.codeflix.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
+import com.gsv.codeflix.admin.catalog.domain.validation.handler.Notification;
+import io.vavr.control.Either;
+
+import static io.vavr.API.Left;
+import static io.vavr.API.Try;
 
 public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
 
@@ -13,13 +17,17 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
     }
 
     @Override
-    public CreateCategoryOutput execute(CreateCategoryInput param) {
-
+    public Either<Notification, CreateCategoryOutput> execute(CreateCategoryInput param) {
         final var aCategory = Category.newCategory(param.name(), param.description(), param.isActive());
-        aCategory.validate(new ThrowsValidationHandler());
+        final var notification = Notification.create();
 
-        categoryGateway.create(aCategory);
+        aCategory.validate(notification);
+        if (notification.hasErrors()) {
+            return Left(notification);
+        }
 
-        return CreateCategoryOutput.with(aCategory);
+        return Try(() -> categoryGateway.create(aCategory))
+                .toEither()
+                .bimap(Notification::create, CreateCategoryOutput::with);
     }
 }

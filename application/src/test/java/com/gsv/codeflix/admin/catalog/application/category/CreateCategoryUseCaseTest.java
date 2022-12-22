@@ -39,7 +39,7 @@ class CreateCategoryUseCaseTest {
         final var output = useCase.execute(input);
 
         Assertions.assertNotNull(output);
-        Assertions.assertNotNull(output.id());
+        Assertions.assertNotNull(output.get().id());
         Mockito.verify(categoryGateway, times(1)).create(argThat(aCategory ->
                 Objects.equals(expectedName, aCategory.getName())
                         && Objects.equals(expectedDescription, aCategory.getDescription())
@@ -54,10 +54,12 @@ class CreateCategoryUseCaseTest {
     @Test
     public void givenAnInvalidCreateCategoryInput_whenCallExecute_thenThrows() {
         final var input = CreateCategoryInput.with("", "desc", true);
-        Assertions.assertThrows(DomainException.class, () -> useCase.execute(input));
+        final var notification = useCase.execute(input).getLeft();
+        Assertions.assertEquals("'name' should not be empty", notification.getErrors().get(0).message());
 
         final var input2 = CreateCategoryInput.with(null, "desc", true);
-        Assertions.assertThrows(DomainException.class, () -> useCase.execute(input2));
+        final var notification2 = useCase.execute(input2).getLeft();
+        Assertions.assertEquals("'name' should not be null", notification2.getErrors().get(0).message());
 
         Mockito.verify(categoryGateway, times(0)).create(any());
     }
