@@ -1,4 +1,4 @@
-package com.gsv.codeflix.admin.catalog.application.category;
+package com.gsv.codeflix.admin.catalog.application.category.create;
 
 public record CreateCategoryInput(
         String name,

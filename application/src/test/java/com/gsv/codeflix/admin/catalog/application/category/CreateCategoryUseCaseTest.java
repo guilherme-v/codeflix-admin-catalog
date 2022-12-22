@@ -1,7 +1,8 @@
 package com.gsv.codeflix.admin.catalog.application.category;
 
+import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryInput;
+import com.gsv.codeflix.admin.catalog.application.category.create.DefaultCreateCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryGateway;
-import com.gsv.codeflix.admin.catalog.domain.exceptions.DomainException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

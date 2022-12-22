@@ -1,4 +1,4 @@
-package com.gsv.codeflix.admin.catalog.application.category;
+package com.gsv.codeflix.admin.catalog.application.category.create;
 
 import com.gsv.codeflix.admin.catalog.application.UseCase;
 import com.gsv.codeflix.admin.catalog.domain.validation.handler.Notification;

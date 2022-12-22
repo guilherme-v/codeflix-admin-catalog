@@ -1,4 +1,4 @@
-package com.gsv.codeflix.admin.catalog.application.category;
+package com.gsv.codeflix.admin.catalog.application.category.create;
 
 import com.gsv.codeflix.admin.catalog.domain.category.Category;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
