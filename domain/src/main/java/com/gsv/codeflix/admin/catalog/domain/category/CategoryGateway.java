@@ -11,5 +11,5 @@ public interface CategoryGateway {
     void deleteById(CategoryID category);
 
     Optional<Category> findById(CategoryID id);
-    Pagination<Category> findAll(CategorySearchQuery query);
+    Pagination<Category> findAll(SearchQuery query);
 }
