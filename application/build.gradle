@@ -1,7 +1,6 @@
 plugins {
     id 'java'
 }
-
 group 'com.gsv.codeflix.admin.catalog.application'
 version '1.0-SNAPSHOT'
 
