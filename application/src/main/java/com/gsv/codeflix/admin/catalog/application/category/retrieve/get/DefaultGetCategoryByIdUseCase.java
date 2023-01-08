@@ -3,6 +3,7 @@ package com.gsv.codeflix.admin.catalog.application.category.retrieve.get;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryGateway;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
 import com.gsv.codeflix.admin.catalog.domain.exceptions.DomainException;
+import com.gsv.codeflix.admin.catalog.domain.exceptions.NotFoundException;
 import com.gsv.codeflix.admin.catalog.domain.validation.Error;
 
 import java.util.function.Supplier;
@@ -24,7 +25,7 @@ public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
     }
 
     private static Supplier<DomainException> notFound(CategoryID param) {
-        final var error = new Error("Category with id %s not found".formatted(param.getValue()));
-        return () -> DomainException.with(error);
+        final var error = new Error("Category with ID %s was not found".formatted(param.getValue()));
+        return () -> NotFoundException.with(error);
     }
 }

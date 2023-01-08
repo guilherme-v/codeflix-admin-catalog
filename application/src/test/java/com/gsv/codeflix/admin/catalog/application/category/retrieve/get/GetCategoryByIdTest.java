@@ -48,7 +48,7 @@ class DefaultGetCategoryByIdUseCaseTest {
 
         Assertions.assertEquals(
                 exp.getErrors().get(0).message(),
-                "Category with id %s not found".formatted(category.getId().getValue())
+                "Category with ID %s was not found".formatted(category.getId().getValue())
         );
     }
 
