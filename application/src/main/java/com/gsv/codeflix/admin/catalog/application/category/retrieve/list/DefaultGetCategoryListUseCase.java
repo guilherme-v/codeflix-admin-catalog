@@ -4,10 +4,10 @@ import com.gsv.codeflix.admin.catalog.domain.category.CategoryGateway;
 import com.gsv.codeflix.admin.catalog.domain.category.SearchQuery;
 import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
 
-public class DefaultGetCategoryList extends GetCategoryList {
+public class DefaultGetCategoryListUseCase extends GetCategoryListUseCase {
     private final CategoryGateway categoryGateway;
 
-    public DefaultGetCategoryList(CategoryGateway categoryGateway) {
+    public DefaultGetCategoryListUseCase(CategoryGateway categoryGateway) {
         this.categoryGateway = categoryGateway;
     }
 

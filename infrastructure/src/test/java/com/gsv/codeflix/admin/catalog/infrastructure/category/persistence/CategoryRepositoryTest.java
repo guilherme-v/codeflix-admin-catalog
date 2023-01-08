@@ -1,7 +1,7 @@
 package com.gsv.codeflix.admin.catalog.infrastructure.category.persistence;
 
 import com.gsv.codeflix.admin.catalog.domain.category.Category;
-import com.gsv.codeflix.admin.catalog.infrastructure.MySQLGatewayTest;
+import com.gsv.codeflix.admin.catalog.MySQLGatewayTest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

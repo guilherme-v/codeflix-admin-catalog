@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
     private final CategoryGateway categoryGateway;
 
-    protected DefaultGetCategoryByIdUseCase(CategoryGateway categoryGateway) {
+    public DefaultGetCategoryByIdUseCase(CategoryGateway categoryGateway) {
         this.categoryGateway = categoryGateway;
     }
 

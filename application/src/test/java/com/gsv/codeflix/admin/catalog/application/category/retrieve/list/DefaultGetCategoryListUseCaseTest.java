@@ -18,10 +18,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DefaultGetCategoryListTest {
+class DefaultGetCategoryListUseCaseTest {
 
     @InjectMocks
-    private DefaultGetCategoryList useCase;
+    private DefaultGetCategoryListUseCase useCase;
 
     @Mock
     private CategoryGateway categoryGateway;
