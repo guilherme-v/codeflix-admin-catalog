@@ -7,10 +7,10 @@ import com.gsv.codeflix.admin.catalog.domain.validation.Error;
 
 import java.util.function.Supplier;
 
-public class DefaultGetCategoryById extends GetCategoryById {
+public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
     private final CategoryGateway categoryGateway;
 
-    protected DefaultGetCategoryById(CategoryGateway categoryGateway) {
+    protected DefaultGetCategoryByIdUseCase(CategoryGateway categoryGateway) {
         this.categoryGateway = categoryGateway;
     }
 
