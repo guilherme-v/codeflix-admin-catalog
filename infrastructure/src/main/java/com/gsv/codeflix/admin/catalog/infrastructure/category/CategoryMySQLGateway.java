@@ -5,6 +5,7 @@ import com.gsv.codeflix.admin.catalog.domain.category.CategoryGateway;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
 import com.gsv.codeflix.admin.catalog.domain.category.SearchQuery;
 import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
+import com.gsv.codeflix.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +21,8 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Category create(Category category) {
-        return null;
+    public Category create(final Category category) {
+        return repository.save(CategoryJpaEntity.from(category)).toAggregate();
     }
 
     @Override
