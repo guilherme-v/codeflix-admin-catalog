@@ -1,6 +1,7 @@
 package com.gsv.codeflix.admin.catalog.infrastructure.category;
 
 import com.gsv.codeflix.admin.catalog.domain.category.Category;
+import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
 import com.gsv.codeflix.admin.catalog.infrastructure.MySQLGatewayTest;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.persistence.CategoryRepository;
@@ -73,8 +74,7 @@ class CategoryMySQLGatewayTest {
         Assertions.assertNull(actualInvalidEntity.getDescription());
         Assertions.assertEquals(expectedIsActive, actualInvalidEntity.isActive());
 
-        final var aUpdatedCategory = aCategory.clone()
-                .update(expectedName, expectedDescription, expectedIsActive);
+        final var aUpdatedCategory = aCategory.clone().update(expectedName, expectedDescription, expectedIsActive);
 
         final var actualCategory = categoryGateway.update(aUpdatedCategory);
 
@@ -99,5 +99,29 @@ class CategoryMySQLGatewayTest {
         Assertions.assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
         Assertions.assertEquals(aCategory.getDeletedAt(), actualEntity.getDeletedAt());
         Assertions.assertNull(actualEntity.getDeletedAt());
+    }
+
+    @Test
+    public void givenAPrePersistedCategoryAndValidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
+        final var aCategory = Category.newCategory("Filmes", null, true);
+
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(aCategory));
+
+        Assertions.assertEquals(1, categoryRepository.count());
+
+        categoryGateway.deleteById(aCategory.getId());
+
+        Assertions.assertEquals(0, categoryRepository.count());
+    }
+
+    @Test
+    public void givenInvalidCategoryId_whenTryToDeleteIt_shouldDeleteCategory() {
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        categoryGateway.deleteById(CategoryID.from("invalid"));
+
+        Assertions.assertEquals(0, categoryRepository.count());
     }
 }
