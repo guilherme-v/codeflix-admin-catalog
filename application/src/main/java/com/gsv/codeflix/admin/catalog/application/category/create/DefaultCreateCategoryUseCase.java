@@ -28,6 +28,6 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
 
         return Try(() -> categoryGateway.create(aCategory))
                 .toEither()
-                .bimap(Notification::create, CreateCategoryOutput::with);
+                .bimap(Notification::create, CreateCategoryOutput::from);
     }
 }
