@@ -7,6 +7,9 @@ import com.gsv.codeflix.admin.catalog.domain.validation.ValidationHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * https://martinfowler.com/eaaDev/Notification.html
+ * */
 public class Notification implements ValidationHandler {
 
     final List<Error> errors;

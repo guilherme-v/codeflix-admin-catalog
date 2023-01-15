@@ -23,7 +23,7 @@ class CategoryIDTest {
     }
 
     @Test
-    public void testFromUnique() {
+    public void testUnique() {
         var categoryID1 = CategoryID.unique();
         assertNotNull(categoryID1);
     }
