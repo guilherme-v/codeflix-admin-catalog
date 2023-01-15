@@ -1,5 +1,6 @@
 package com.gsv.codeflix.admin.catalog.infrastructure.api.controllers;
 
+import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
 import com.gsv.codeflix.admin.catalog.infrastructure.api.CategoryAPI;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,9 +10,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 @Tag(name = "Categories")
 public class CategoryController implements CategoryAPI {
+
+    private final CreateCategoryUseCase createCategoryUseCase;
+
+    public CategoryController(CreateCategoryUseCase createCategoryUseCase) {
+        this.createCategoryUseCase = createCategoryUseCase;
+    }
+
     @Override
     @Operation(summary = "Create a new category")
     @ApiResponses(value = {

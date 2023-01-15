@@ -1,10 +1,12 @@
 package com.gsv.codeflix.admin.catalog.infrastructure.api;
 
 import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/categories")
 public interface CategoryAPI {
