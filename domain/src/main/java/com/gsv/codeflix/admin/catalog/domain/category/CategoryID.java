@@ -12,17 +12,16 @@ public class CategoryID extends Identifier {
         this.value = value;
     }
 
-    public static CategoryID unique() {
-        final var id = UUID.randomUUID().toString().toLowerCase();
-        return new CategoryID(id);
-    }
-
     public static CategoryID from(final String value) {
         return new CategoryID(value);
     }
 
     public static CategoryID from(final UUID uuid) {
         return new CategoryID(uuid.toString().toLowerCase());
+    }
+
+    public static CategoryID unique() {
+        return CategoryID.from(UUID.randomUUID());
     }
 
     public String getValue() {

@@ -4,6 +4,20 @@ import com.gsv.codeflix.admin.catalog.domain.validation.ValidationHandler;
 
 import java.util.Objects;
 
+/**
+ * Eric Evan's classification:
+ * In Domain Driver Design, Entities are objects that have a distinct identity that runs
+ * through time and different representations. You also hear these called `reference objects`.
+ *
+ * <p>
+ * As such some examples may help. Entities are usually big things like Customer, Ship, Rental Agreement.
+ * Values are usually little things like Date, Money, Database Query.
+ * <p>
+ * One clear division between entities and values is that values override the equality method
+ * (and thus hash) while entities usually don't. This is because you usually don't want to have more
+ * than one object representing the same conceptual entity within your processing context,
+ * however you don't care about multiple "5.0" objects.
+ */
 public abstract class Entity<ID extends Identifier> {
     protected final ID id;
 
@@ -17,17 +31,4 @@ public abstract class Entity<ID extends Identifier> {
     }
 
     public abstract void validate(ValidationHandler handler);
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Entity<?> entity = (Entity<?>) o;
-        return getId().equals(entity.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
 }
