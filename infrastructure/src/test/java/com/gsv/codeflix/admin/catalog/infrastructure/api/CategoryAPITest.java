@@ -4,8 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsv.codeflix.admin.catalog.ControllerTests;
 import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryOutput;
 import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryUseCase;
+import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdOutput;
+import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
+import com.gsv.codeflix.admin.catalog.domain.category.Category;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
 import com.gsv.codeflix.admin.catalog.domain.exceptions.DomainException;
+import com.gsv.codeflix.admin.catalog.domain.exceptions.NotFoundException;
 import com.gsv.codeflix.admin.catalog.domain.validation.Error;
 import com.gsv.codeflix.admin.catalog.domain.validation.handler.Notification;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
@@ -38,6 +42,12 @@ public class CategoryAPITest {
     @MockBean
     private CreateCategoryUseCase createCategoryUseCase;
 
+    @MockBean
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
+
+    // ------------------------------------------------------------------------------------------------
+    // CreateCategory
+    // ------------------------------------------------------------------------------------------------
     @Test
     public void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryID() throws Exception {
         final var expectedName = "movies";
@@ -128,5 +138,48 @@ public class CategoryAPITest {
                         Objects.equals(arg.description(), expectedDesc) &&
                         Objects.equals(arg.isActive(), expectedIsActive)
         ));
+    }
+
+
+    // ------------------------------------------------------------------------------------------------
+    // GetCategoryById
+    // ------------------------------------------------------------------------------------------------
+    @Test
+    public void givenAValidId_whenCallGetCategory_shouldReturnTheCategory() throws Exception {
+        final var category = Category.newCategory("NAME", "DESC", true);
+        final var expectedId = category.getId().getValue();
+        final var categoryByIdOutput = GetCategoryByIdOutput.from(category);
+        when(getCategoryByIdUseCase.execute(any())).thenReturn(categoryByIdOutput);
+
+        final var request = MockMvcRequestBuilders
+                .get("/categories/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("");
+
+        this.mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.id", equalTo(category.getId().getValue())));
+
+        verify(getCategoryByIdUseCase, times(1)).execute(expectedId);
+    }
+
+    @Test
+    public void givenAValidId_whenCallGetCategory_shouldReturnNotFound() throws Exception {
+        final var expectedErrorMessage = "Category with ID 123 was not found";
+        final var expectedId = CategoryID.from("123");
+
+        when(getCategoryByIdUseCase.execute(any()))
+                .thenThrow(NotFoundException.with(Category.class, expectedId));
+
+        final var request = MockMvcRequestBuilders.get("/categories/{id}", expectedId.getValue())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        this.mvc.perform(request)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 }

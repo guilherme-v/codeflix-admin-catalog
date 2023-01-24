@@ -9,7 +9,7 @@ import java.util.List;
 
 public class NotFoundException extends DomainException {
 
-    protected NotFoundException(final String aMessage, final List<Error> anErrors) {
+    public NotFoundException(final String aMessage, final List<Error> anErrors) {
         super(aMessage, anErrors);
     }
 
