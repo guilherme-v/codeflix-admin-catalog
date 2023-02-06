@@ -27,7 +27,7 @@ public class DefaultUpdateCategoryUseCase extends UpdateCategoryUseCase {
                 .toEither()
                 .flatMap(category -> Try(() -> category.update(param.name(), param.description(), param.isActive())).toEither())
                 .flatMap(category -> Try(() -> categoryGateway.update(category)).toEither())
-                .bimap(Notification::create, UpdateCategoryOutput::with);
+                .bimap(Notification::create, UpdateCategoryOutput::from);
     }
 
     private static Supplier<DomainException> notFound(UpdateCategoryInput param) {
