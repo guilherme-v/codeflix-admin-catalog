@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsv.codeflix.admin.catalog.ControllerTests;
 import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryOutput;
 import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryUseCase;
+import com.gsv.codeflix.admin.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdOutput;
 import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategoryOutput;
@@ -51,6 +52,9 @@ public class CategoryAPITest {
 
     @MockBean
     private UpdateCategoryUseCase updateCategoryUseCase;
+
+    @MockBean
+    private DeleteCategoryUseCase deleteCategoryUseCase;
 
     // ------------------------------------------------------------------------------------------------
     // CreateCategory
@@ -251,4 +255,32 @@ public class CategoryAPITest {
                         && Objects.equals(expectedIsActive, cmd.isActive())
         ));
     }
+
+
+    // ------------------------------------------------------------------------------------------------
+    // DeleteCategoryById
+    // ------------------------------------------------------------------------------------------------
+    @Test
+    public void givenARequestWithValidID_whenCallsDeleteCategory_shouldReturnCategoryId() throws Exception {
+        // given
+        final var expectedId = "1234";
+        doNothing().when(deleteCategoryUseCase).execute(any());
+
+        // when
+        final var request = put("/categories/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(request)
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isNoContent())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE));
+
+        verify(updateCategoryUseCase, times(1)).execute(argThat(input ->
+                Objects.equals(expectedId, input.id())
+        ));
+    }
+
 }
