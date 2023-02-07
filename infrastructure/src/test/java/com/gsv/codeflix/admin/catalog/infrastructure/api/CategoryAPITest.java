@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.Objects;
 
 import static io.vavr.API.Left;
@@ -31,9 +32,10 @@ import static io.vavr.API.Right;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @ControllerTests(controllers = CategoryAPI.class)
 public class CategoryAPITest {
@@ -267,7 +269,7 @@ public class CategoryAPITest {
         doNothing().when(deleteCategoryUseCase).execute(any());
 
         // when
-        final var request = put("/categories/{id}", expectedId)
+        final var request = MockMvcRequestBuilders.delete("/categories/{id}", expectedId)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -275,12 +277,9 @@ public class CategoryAPITest {
                 .andDo(print());
 
         // then
-        response.andExpect(status().isNoContent())
-                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE));
+        response.andExpect(status().isNoContent());
 
-        verify(updateCategoryUseCase, times(1)).execute(argThat(input ->
-                Objects.equals(expectedId, input.id())
-        ));
+        verify(deleteCategoryUseCase, times(1)).execute(eq(expectedId));
     }
 
 }

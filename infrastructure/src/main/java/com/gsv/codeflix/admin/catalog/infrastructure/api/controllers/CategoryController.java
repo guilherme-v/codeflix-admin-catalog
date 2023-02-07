@@ -2,6 +2,7 @@ package com.gsv.codeflix.admin.catalog.infrastructure.api.controllers;
 
 import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryInput;
 import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryUseCase;
+import com.gsv.codeflix.admin.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategoryInput;
 import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategoryUseCase;
@@ -28,15 +29,18 @@ public class CategoryController implements CategoryAPI {
     private final CreateCategoryUseCase createCategoryUseCase;
     private final GetCategoryByIdUseCase getCategoryByIdUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
+    private final DeleteCategoryUseCase deleteCategoryUseCase;
 
     public CategoryController(
             CreateCategoryUseCase createCategoryUseCase,
             GetCategoryByIdUseCase getCategoryByIdUseCase,
-            UpdateCategoryUseCase updateCategoryUseCase
+            UpdateCategoryUseCase updateCategoryUseCase,
+            DeleteCategoryUseCase deleteCategoryUseCase
     ) {
         this.createCategoryUseCase = createCategoryUseCase;
         this.getCategoryByIdUseCase = getCategoryByIdUseCase;
         this.updateCategoryUseCase = updateCategoryUseCase;
+        this.deleteCategoryUseCase = deleteCategoryUseCase;
     }
 
     @Override
@@ -80,5 +84,10 @@ public class CategoryController implements CategoryAPI {
                         notification -> ResponseEntity.unprocessableEntity().body(notification),
                         ResponseEntity::ok
                 );
+    }
+
+    @Override
+    public void deleteById(final String id) {
+        this.deleteCategoryUseCase.execute(id);
     }
 }
