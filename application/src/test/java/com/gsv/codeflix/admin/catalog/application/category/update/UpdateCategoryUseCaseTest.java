@@ -26,15 +26,15 @@ class UpdateCategoryUseCaseTest {
 
         when(categoryGateway.update(any())).thenReturn(categoryUpdated);
 
-        final var input = UpdateCategoryInput.with(initialCategory.getId(), "NAME2", "DESC2", false);
+        final var input = UpdateCategoryInput.with(initialCategory.getId().getValue(), "NAME2", "DESC2", false);
         final var useCase = new DefaultUpdateCategoryUseCase(categoryGateway);
         final var actual = useCase.execute(input).get();
 
         Assertions.assertNotNull(actual);
-        Assertions.assertEquals(actual.id(), initialCategory.getId());
+        Assertions.assertEquals(actual.id(), initialCategory.getId().getValue());
 
         Mockito.verify(categoryGateway, times(1)).findById(initialCategory.getId());
-        Mockito.verify(categoryGateway, times(1)).update(argThat(category -> Objects.equals(category.getName(), input.name()) && Objects.equals(category.getId().getValue(), input.id().getValue()) && Objects.equals(category.getDescription(), input.description()) && Objects.equals(category.getIsActive(), input.isActive())));
+        Mockito.verify(categoryGateway, times(1)).update(argThat(category -> Objects.equals(category.getName(), input.name()) && Objects.equals(category.getId().getValue(), input.id()) && Objects.equals(category.getDescription(), input.description()) && Objects.equals(category.getIsActive(), input.isActive())));
     }
 
     @Test
@@ -45,7 +45,7 @@ class UpdateCategoryUseCaseTest {
 
         when(categoryGateway.findById(any())).thenReturn(Optional.empty());
 
-        final var input = UpdateCategoryInput.with(initialCategory.getId(), "NAME2", "DESC2", false);
+        final var input = UpdateCategoryInput.with(initialCategory.getId().getValue(), "NAME2", "DESC2", false);
 
         final var useCase = new DefaultUpdateCategoryUseCase(categoryGateway);
         final var notification = useCase.execute(input).getLeft();
@@ -63,7 +63,7 @@ class UpdateCategoryUseCaseTest {
 
         when(categoryGateway.findById(any())).thenReturn(Optional.of(category));
 
-        final var input = UpdateCategoryInput.with(category.getId(), null, // invalid
+        final var input = UpdateCategoryInput.with(category.getId().getValue(), null, // invalid
                 "DESC2", false);
 
         final var useCase = new DefaultUpdateCategoryUseCase(categoryGateway);
@@ -82,7 +82,7 @@ class UpdateCategoryUseCaseTest {
 
         when(categoryGateway.findById(any())).thenThrow(new IllegalStateException("bla"));
 
-        final var input = UpdateCategoryInput.with(initialCategory.getId(), "NAME2", "DESC2", false);
+        final var input = UpdateCategoryInput.with(initialCategory.getId().getValue(), "NAME2", "DESC2", false);
 
         final var useCase = new DefaultUpdateCategoryUseCase(categoryGateway);
         final var notification = useCase.execute(input).getLeft();
@@ -96,7 +96,7 @@ class UpdateCategoryUseCaseTest {
         void givenUnexpectedIssues_withGatewayUpdate_whenExecute_thenItShouldNotify() {
         final var category = Category.newCategory("OK", "DESC", true);
         final var categoryGateway = Mockito.mock(CategoryGateway.class);
-        final var input = UpdateCategoryInput.with(category.getId(), "NAME2", "DESC2", false);
+        final var input = UpdateCategoryInput.with(category.getId().getValue(), "NAME2", "DESC2", false);
 
         when(categoryGateway.findById(any())).thenReturn(Optional.of(category));
         when(categoryGateway.update(any())).thenThrow(new IllegalStateException("bla"));
