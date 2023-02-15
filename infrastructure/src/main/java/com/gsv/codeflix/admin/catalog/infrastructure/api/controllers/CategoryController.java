@@ -10,8 +10,9 @@ import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategory
 import com.gsv.codeflix.admin.catalog.domain.category.SearchQuery;
 import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
 import com.gsv.codeflix.admin.catalog.infrastructure.api.CategoryAPI;
-import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CategoryApiOutput;
-import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
+import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CategoryListResponse;
+import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CategoryResponse;
+import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryRequest;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.presenters.CategoryApiPresenter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,7 +48,7 @@ public class CategoryController implements CategoryAPI {
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createCategory(CreateCategoryApiInput input) {
+    public ResponseEntity<?> createCategory(CreateCategoryRequest input) {
         final var cmdInput = CreateCategoryInput.with(
                 input.name(),
                 input.description(),
@@ -62,13 +63,13 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public Pagination<?> listCategories(String search, int page, int perPage, String sort, String direction) {
+    public Pagination<CategoryListResponse> listCategories(String search, int page, int perPage, String sort, String direction) {
         final var query = new SearchQuery(page, perPage, search, sort, direction);
-        return getCategoryListUseCase.execute(query);
+        return getCategoryListUseCase.execute(query).map(CategoryApiPresenter::present);
     }
 
     @Override
-    public CategoryApiOutput getById(String id) {
+    public CategoryResponse getById(String id) {
         return CategoryApiPresenter.present(this.getCategoryByIdUseCase.execute(id));
     }
 

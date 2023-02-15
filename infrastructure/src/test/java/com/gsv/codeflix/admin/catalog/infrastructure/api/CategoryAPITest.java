@@ -18,7 +18,7 @@ import com.gsv.codeflix.admin.catalog.domain.exceptions.NotFoundException;
 import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
 import com.gsv.codeflix.admin.catalog.domain.validation.Error;
 import com.gsv.codeflix.admin.catalog.domain.validation.handler.Notification;
-import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
+import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryRequest;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class CategoryAPITest {
         final var expectedDesc = "The most loved category";
         final var expectedIsActive = true;
 
-        final var input = new CreateCategoryApiInput(expectedName, expectedDesc, expectedIsActive);
+        final var input = new CreateCategoryRequest(expectedName, expectedDesc, expectedIsActive);
 
         when(createCategoryUseCase.execute(any())).thenReturn(Right(CreateCategoryOutput.from(CategoryID.from("123"))));
 
@@ -91,7 +91,7 @@ public class CategoryAPITest {
         final var expectedIsActive = true;
         final var expectedMessage = "'name' should not be null";
 
-        final var input = new CreateCategoryApiInput(expectedName, expectedDesc, expectedIsActive);
+        final var input = new CreateCategoryRequest(expectedName, expectedDesc, expectedIsActive);
         final var notif = Notification.create(new Error(expectedMessage));
         when(createCategoryUseCase.execute(any())).thenReturn(Left(notif));
 
@@ -109,7 +109,7 @@ public class CategoryAPITest {
         final var expectedIsActive = true;
         final var expectedMessage = "unexpected error";
 
-        final var input = new CreateCategoryApiInput(expectedName, expectedDesc, expectedIsActive);
+        final var input = new CreateCategoryRequest(expectedName, expectedDesc, expectedIsActive);
         final var error = new Error(expectedMessage);
         when(createCategoryUseCase.execute(any())).thenThrow(DomainException.with(error));
 

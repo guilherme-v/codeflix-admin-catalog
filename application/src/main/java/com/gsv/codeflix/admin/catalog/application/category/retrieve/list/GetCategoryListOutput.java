@@ -1,25 +1,26 @@
 package com.gsv.codeflix.admin.catalog.application.category.retrieve.list;
 
 import com.gsv.codeflix.admin.catalog.domain.category.Category;
+import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
 
 import java.time.Instant;
 
 public record GetCategoryListOutput(
+        CategoryID id,
         String name,
         String description,
         boolean isActive,
         Instant createdAt,
-        Instant updatedAt,
         Instant deletedAt
 ) {
-    public static GetCategoryListOutput from(Category category) {
+    public static GetCategoryListOutput from(Category aCategory) {
         return new GetCategoryListOutput(
-                category.getName(),
-                category.getDescription(),
-                category.getIsActive(),
-                category.getCreatedAt(),
-                category.getUpdatedAt(),
-                category.getDeletedAt()
+                aCategory.getId(),
+                aCategory.getName(),
+                aCategory.getDescription(),
+                aCategory.getIsActive(),
+                aCategory.getCreatedAt(),
+                aCategory.getDeletedAt()
         );
     }
 }
