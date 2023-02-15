@@ -4,19 +4,19 @@ import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategory
 import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
+import com.gsv.codeflix.admin.catalog.application.category.retrieve.list.GetCategoryListUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategoryInput;
 import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategoryUseCase;
-import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
+import com.gsv.codeflix.admin.catalog.domain.category.SearchQuery;
 import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
 import com.gsv.codeflix.admin.catalog.infrastructure.api.CategoryAPI;
-import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CategoryApiOutput;
+import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.presenters.CategoryApiPresenter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,17 +30,19 @@ public class CategoryController implements CategoryAPI {
     private final GetCategoryByIdUseCase getCategoryByIdUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
     private final DeleteCategoryUseCase deleteCategoryUseCase;
+    private final GetCategoryListUseCase getCategoryListUseCase;
 
     public CategoryController(
             CreateCategoryUseCase createCategoryUseCase,
             GetCategoryByIdUseCase getCategoryByIdUseCase,
             UpdateCategoryUseCase updateCategoryUseCase,
-            DeleteCategoryUseCase deleteCategoryUseCase
-    ) {
+            DeleteCategoryUseCase deleteCategoryUseCase,
+            GetCategoryListUseCase getCategoryListUseCase) {
         this.createCategoryUseCase = createCategoryUseCase;
         this.getCategoryByIdUseCase = getCategoryByIdUseCase;
         this.updateCategoryUseCase = updateCategoryUseCase;
         this.deleteCategoryUseCase = deleteCategoryUseCase;
+        this.getCategoryListUseCase = getCategoryListUseCase;
     }
 
     @Override
@@ -59,10 +61,10 @@ public class CategoryController implements CategoryAPI {
                 );
     }
 
-
     @Override
-    public Pagination<?> listCategories(String search, int page, int perPage, int sort, int dir) {
-        return null;
+    public Pagination<?> listCategories(String search, int page, int perPage, String sort, String direction) {
+        final var query = new SearchQuery(page, perPage, search, sort, direction);
+        return getCategoryListUseCase.execute(query);
     }
 
     @Override
