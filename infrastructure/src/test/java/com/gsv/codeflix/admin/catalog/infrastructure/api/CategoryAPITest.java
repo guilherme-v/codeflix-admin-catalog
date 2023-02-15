@@ -7,12 +7,15 @@ import com.gsv.codeflix.admin.catalog.application.category.create.CreateCategory
 import com.gsv.codeflix.admin.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdOutput;
 import com.gsv.codeflix.admin.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
+import com.gsv.codeflix.admin.catalog.application.category.retrieve.list.GetCategoryListOutput;
+import com.gsv.codeflix.admin.catalog.application.category.retrieve.list.GetCategoryListUseCase;
 import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategoryOutput;
 import com.gsv.codeflix.admin.catalog.application.category.update.UpdateCategoryUseCase;
 import com.gsv.codeflix.admin.catalog.domain.category.Category;
 import com.gsv.codeflix.admin.catalog.domain.category.CategoryID;
 import com.gsv.codeflix.admin.catalog.domain.exceptions.DomainException;
 import com.gsv.codeflix.admin.catalog.domain.exceptions.NotFoundException;
+import com.gsv.codeflix.admin.catalog.domain.pagination.Pagination;
 import com.gsv.codeflix.admin.catalog.domain.validation.Error;
 import com.gsv.codeflix.admin.catalog.domain.validation.handler.Notification;
 import com.gsv.codeflix.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
@@ -57,6 +60,9 @@ public class CategoryAPITest {
 
     @MockBean
     private DeleteCategoryUseCase deleteCategoryUseCase;
+
+    @MockBean
+    private GetCategoryListUseCase getCategoryListUseCase;
 
     // ------------------------------------------------------------------------------------------------
     // CreateCategory
@@ -280,6 +286,63 @@ public class CategoryAPITest {
         response.andExpect(status().isNoContent());
 
         verify(deleteCategoryUseCase, times(1)).execute(eq(expectedId));
+    }
+
+
+    // ------------------------------------------------------------------------------------------------
+    // GetCategoryListUseCase
+    // ------------------------------------------------------------------------------------------------
+    @Test
+    public void givenValidParams_whenCallsListCategories_shouldReturnCategories() throws Exception {
+        // given
+        final var aCategory = Category.newCategory("Movies", null, true);
+
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "movies";
+        final var expectedSort = "description";
+        final var expectedDirection = "desc";
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+
+        final var expectedItems = List.of(GetCategoryListOutput.from(aCategory));
+
+        when(getCategoryListUseCase.execute(any()))
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedTotal, expectedItems));
+
+        // when
+        final var request = get("/categories")
+                .queryParam("page", String.valueOf(expectedPage))
+                .queryParam("perPage", String.valueOf(expectedPerPage))
+                .queryParam("sort", expectedSort)
+                .queryParam("dir", expectedDirection)
+                .queryParam("search", expectedTerms)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(request)
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isOk())
+                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.items", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(aCategory.getId().getValue())))
+                .andExpect(jsonPath("$.items[0].name", equalTo(aCategory.getName())))
+                .andExpect(jsonPath("$.items[0].description", equalTo(aCategory.getDescription())))
+                .andExpect(jsonPath("$.items[0].is_active", equalTo(aCategory.getIsActive())))
+                .andExpect(jsonPath("$.items[0].created_at", equalTo(aCategory.getCreatedAt().toString())))
+                .andExpect(jsonPath("$.items[0].deleted_at", equalTo(aCategory.getDeletedAt())));
+
+        verify(getCategoryListUseCase, times(1)).execute(argThat(query ->
+                Objects.equals(expectedPage, query.page())
+                        && Objects.equals(expectedPerPage, query.perPage())
+                        && Objects.equals(expectedDirection, query.direction())
+                        && Objects.equals(expectedSort, query.sort())
+                        && Objects.equals(expectedTerms, query.terms())
+        ));
     }
 
 }
